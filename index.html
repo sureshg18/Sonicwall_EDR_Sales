@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SonicWall EDR – Sales Update Sheet v2 | eCAPS</title>
+<style>
+  :root{
+    --navy:#0e1b33;
+    --orange:#ff6c0c;
+    --orange-dark:#e55f06;
+    --grey:#f4f6fa;
+    --border:#d9dfea;
+    --text:#1c2436;
+    --muted:#5c6a85;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,Helvetica,sans-serif;}
+  body{min-height:100vh;background:var(--grey);color:var(--text);display:flex;flex-direction:column;}
+
+  /* ── Top bar ── */
+  header{
+    background:#fff;
+    border-bottom:3px solid var(--orange);
+    padding:14px 40px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+  }
+  .title h1{font-size:24px;color:var(--navy);}
+  .title h1 span{color:var(--orange);}
+  .title p{font-size:12.5px;color:var(--muted);margin-top:2px;}
+  .logos{display:flex;align-items:center;gap:26px;}
+  .logos img.sw{height:34px;}
+  .logos img.ec{height:44px;}
+  .logos .sep{width:1px;height:38px;background:var(--border);}
+
+  main{flex:1;padding:22px 40px 18px;}
+  form{max-width:1500px;margin:0 auto;}
+
+  /* ── Executive strip (filled once) ── */
+  .exec-strip{
+    background:#fff;
+    border:1px solid var(--border);
+    border-left:4px solid var(--orange);
+    border-radius:10px;
+    padding:14px 22px;
+    display:flex;
+    gap:22px;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+  }
+  .exec-strip .field{margin:0;}
+  .exec-strip .field.name{width:220px;}
+  .exec-strip .field.loc{width:170px;}
+  .exec-strip .field.week{width:320px;}
+
+  .field{margin-bottom:13px;}
+  label{display:block;font-size:12.5px;font-weight:600;margin-bottom:4px;}
+  .req{color:var(--orange);}
+  input,select,textarea{
+    width:100%;
+    padding:9px 11px;
+    font-size:13.5px;
+    border:1px solid var(--border);
+    border-radius:7px;
+    background:#fff;
+    color:var(--text);
+    outline:none;
+  }
+  input:focus,select:focus,textarea:focus{
+    border-color:var(--orange);
+    box-shadow:0 0 0 3px rgba(255,108,12,.14);
+  }
+  textarea{resize:vertical;min-height:60px;}
+  input.locked{
+    background:var(--grey);
+    color:var(--navy);
+    font-weight:600;
+    cursor:default;
+    pointer-events:none;
+  }
+
+  /* ── Prospect entry cards ── */
+  .entry{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:18px 22px;
+    margin-bottom:16px;
+    position:relative;
+  }
+  .entry-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:2px solid var(--grey);
+    padding-bottom:8px;
+    margin-bottom:14px;
+  }
+  .entry-head h2{
+    font-size:12.5px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--orange-dark);
+  }
+  .remove-btn{
+    background:none;
+    border:1px solid var(--border);
+    color:#b02a2a;
+    font-size:12px;
+    font-weight:700;
+    border-radius:6px;
+    padding:4px 12px;
+    cursor:pointer;
+  }
+  .remove-btn:hover{background:#fdecec;border-color:#f2c4c4;}
+
+  .egrid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px 18px;
+  }
+  .egrid .field{margin:0;}
+  .egrid .span2{grid-column:span 2;}
+
+  /* ── Add + Submit ── */
+  .add-row{margin:4px 0 18px;}
+  .add-btn{
+    background:#fff;
+    color:var(--orange-dark);
+    border:2px dashed var(--orange);
+    font-size:14px;
+    font-weight:800;
+    border-radius:9px;
+    padding:11px 26px;
+    cursor:pointer;
+    width:100%;
+  }
+  .add-btn:hover{background:#fff4ec;}
+  .add-btn:disabled{border-color:var(--border);color:var(--muted);cursor:not-allowed;background:#fff;}
+
+  .submit-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:22px;
+    margin-top:6px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    background:var(--orange);
+    color:#fff;
+    font-size:15px;
+    font-weight:800;
+    letter-spacing:.5px;
+    border:none;
+    border-radius:9px;
+    padding:13px 70px;
+    cursor:pointer;
+  }
+  .btn:hover{background:var(--orange-dark);}
+  .btn:disabled{background:#c9ced9;cursor:not-allowed;}
+  .note{font-size:12px;color:var(--muted);}
+  .msg{display:none;padding:10px 18px;border-radius:8px;font-size:13.5px;font-weight:600;}
+  .msg.ok{display:block;background:#e8f7ee;color:#177245;border:1px solid #b6e2c8;}
+  .msg.err{display:block;background:#fdecec;color:#b02a2a;border:1px solid #f2c4c4;}
+
+  footer{text-align:center;font-size:11.5px;color:var(--muted);padding:10px;}
+
+  @media (max-width:1000px){
+    .egrid{grid-template-columns:1fr 1fr;}
+    .egrid .span2{grid-column:span 2;}
+    header{flex-direction:column;text-align:center;}
+    main{padding:18px 14px;}
+    .exec-strip .field{width:100% !important;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="title">
+    <h1>SonicWall EDR <span>— Sales Update Sheet</span></h1>
+    <p>eCAPS internal sales team · one update, multiple prospects · v2</p>
+  </div>
+  <div class="logos">
+    <img class="sw" src="https://raw.githubusercontent.com/sureshg18/brand-assets/main/sonicwall_logo_web.png" alt="SonicWall">
+    <div class="sep"></div>
+    <img class="ec" src="https://raw.githubusercontent.com/sureshg18/brand-assets/main/ecaps_logo_web.png" alt="eCAPS">
+  </div>
+</header>
+
+<main>
+<form id="edrForm">
+
+  <!-- Executive details : filled ONCE -->
+  <div class="exec-strip">
+    <div class="field name">
+      <label>Executive Name <span class="req">*</span></label>
+      <select name="Executive Name" id="execName" required>
+        <option value="" selected disabled>Name</option>
+        <option>Sarala</option>
+        <option>Krishna</option>
+        <option>GPS</option>
+        <option>Naveen</option>
+        <option>JiJo</option>
+        <option>Daniel</option>
+      </select>
+    </div>
+    <div class="field loc">
+      <label>Location</label>
+      <input type="text" name="Location" id="execLocation" readonly tabindex="-1" placeholder="Auto" class="locked">
+    </div>
+    <div class="field week">
+      <label>Update Week <span class="req">*</span></label>
+      <select name="Update Week" id="updateWeek" required></select>
+    </div>
+  </div>
+
+  <!-- Prospect entries -->
+  <div id="entries"></div>
+
+  <div class="add-row">
+    <button type="button" class="add-btn" id="addBtn">+ ADD ANOTHER PROSPECT</button>
+  </div>
+
+  <div class="submit-row">
+    <button class="btn" type="submit" id="sendBtn">SUBMIT ALL</button>
+    <div class="msg" id="msg"></div>
+    <div class="note">Goes to your <b>Regional Directors</b> &amp; <b>Corp (Sai / Suresh)</b> automatically, based on location</div>
+  </div>
+</form>
+</main>
+
+<footer>© eCAPS Computers India Pvt Ltd · SonicWall EDR Sales Desk · Internal use only</footer>
+
+<!-- Template for one prospect entry -->
+<template id="entryTemplate">
+  <div class="entry">
+    <div class="entry-head">
+      <h2>Prospect <span class="eno">1</span></h2>
+      <button type="button" class="remove-btn">✕ Remove</button>
+    </div>
+    <div class="egrid">
+      <div class="field span2">
+        <label>Prospect / Customer Name <span class="req">*</span></label>
+        <input type="text" data-f="Prospect Name" required placeholder="End customer name">
+      </div>
+      <div class="field">
+        <label>Prospect Base</label>
+        <input type="text" data-f="Prospect Base" placeholder="Industry / vertical / city">
+      </div>
+      <div class="field">
+        <label>Partner Name <span class="req">*</span></label>
+        <input type="text" data-f="Partner Name" required placeholder="Channel partner">
+      </div>
+      <div class="field">
+        <label>Number of EDR Users <span class="req">*</span></label>
+        <input type="number" data-f="Number of EDR Users" required min="1" placeholder="e.g. 150">
+      </div>
+      <div class="field">
+        <label>Current AV / EDR in Use</label>
+        <select data-f="Current AV or EDR" class="avSel">
+          <option value="" selected disabled>Select brand</option>
+          <option>Quick Heal / Seqrite</option>
+          <option>Kaspersky</option>
+          <option>K7</option>
+          <option>eScan</option>
+          <option>ESET</option>
+          <option>Bitdefender</option>
+          <option>Sophos</option>
+          <option>Trend Micro</option>
+          <option>No AV / Free AV only</option>
+          <option>Others</option>
+        </select>
+      </div>
+      <div class="field otherAv" style="display:none;">
+        <label>If Others — specify</label>
+        <input type="text" data-f="Other AV Name" placeholder="Type the brand name">
+      </div>
+      <div class="field">
+        <label>Status <span class="req">*</span></label>
+        <select data-f="Status" required>
+          <option value="" selected disabled>Select status</option>
+          <option>New Lead</option>
+          <option>In Discussion</option>
+          <option>Proposal Given</option>
+          <option>Closed</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Expected Closure</label>
+        <input type="month" data-f="Expected Closure">
+      </div>
+      <div class="field span2">
+        <label>Discussion Summary / Remarks</label>
+        <textarea data-f="Remarks" placeholder="Key points, POC status, competition, pricing…"></textarea>
+      </div>
+      <div class="field span2">
+        <label>Next Action Planned</label>
+        <input type="text" data-f="Next Action" placeholder="e.g. Demo on 24-Jul, follow-up next week">
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  // ── PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL (ver2) BETWEEN THE QUOTES ──
+  const SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_URL_HERE";
+  const MAX_ENTRIES = 4;
+
+  // Executive → Location auto-select
+  const EXEC_LOCATION = {
+    'Sarala':  'Bangalore',
+    'Krishna': 'Coimbatore',
+    'GPS':     'Madurai',
+    'Naveen':  'AP & TG',
+    'JiJo':    'Kerala',
+    'Daniel':  'Chennai'
+  };
+  const execName = document.getElementById('execName');
+  const execLoc  = document.getElementById('execLocation');
+  execName.addEventListener('change', () => {
+    execLoc.value = EXEC_LOCATION[execName.value] || '';
+  });
+
+  // ── Update Week: current & previous, numbered from April 1 (financial year) ──
+  (function buildWeeks(){
+    const sel = document.getElementById('updateWeek');
+    const today = new Date();
+    function mondayOf(d){
+      const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      const day = (x.getDay() + 6) % 7;
+      x.setDate(x.getDate() - day);
+      return x;
+    }
+    const fyStartYear = (today.getMonth() >= 3) ? today.getFullYear() : today.getFullYear() - 1;
+    const week1Monday = mondayOf(new Date(fyStartYear, 3, 1));
+    function fmt(d){
+      return d.getDate().toString().padStart(2,'0') + ' ' +
+             ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];
+    }
+    function weekInfo(anyDate){
+      const mon = mondayOf(anyDate);
+      const sun = new Date(mon); sun.setDate(mon.getDate() + 6);
+      const num = Math.floor((mon - week1Monday) / (7 * 86400000)) + 1;
+      return 'Week ' + num + '  (' + fmt(mon) + ' – ' + fmt(sun) + ' ' + sun.getFullYear() + ')';
+    }
+    const cur = weekInfo(today);
+    const prevDate = new Date(today); prevDate.setDate(today.getDate() - 7);
+    const prev = weekInfo(prevDate);
+    sel.innerHTML =
+      '<option value="' + cur  + '" selected>' + cur  + ' — Current</option>' +
+      '<option value="' + prev + '">' + prev + ' — Previous</option>';
+  })();
+
+  // ── Multi-prospect entries ──
+  const entriesBox = document.getElementById('entries');
+  const template   = document.getElementById('entryTemplate');
+  const addBtn     = document.getElementById('addBtn');
+
+  function addEntry(){
+    if (entriesBox.children.length >= MAX_ENTRIES) return;
+    const node = template.content.cloneNode(true);
+    const entry = node.querySelector('.entry');
+
+    // Others → show specify box
+    const avSel = entry.querySelector('.avSel');
+    const otherField = entry.querySelector('.otherAv');
+    avSel.addEventListener('change', () => {
+      otherField.style.display = (avSel.value === 'Others') ? 'block' : 'none';
+    });
+
+    // Remove button
+    entry.querySelector('.remove-btn').addEventListener('click', () => {
+      entry.remove();
+      renumber();
+    });
+
+    entriesBox.appendChild(entry);
+    renumber();
+  }
+
+  function renumber(){
+    const entries = entriesBox.querySelectorAll('.entry');
+    entries.forEach((en, i) => {
+      en.querySelector('.eno').textContent = i + 1;
+      // hide remove on the first (and only) entry
+      en.querySelector('.remove-btn').style.display = (entries.length === 1) ? 'none' : 'inline-block';
+    });
+    addBtn.disabled = entries.length >= MAX_ENTRIES;
+    addBtn.textContent = (entries.length >= MAX_ENTRIES)
+      ? 'MAXIMUM ' + MAX_ENTRIES + ' PROSPECTS PER SUBMISSION'
+      : '+ ADD ANOTHER PROSPECT';
+  }
+
+  addBtn.addEventListener('click', addEntry);
+  addEntry(); // start with one entry
+
+  // ── Submit ──
+  const form = document.getElementById('edrForm');
+  const btn  = document.getElementById('sendBtn');
+  const msg  = document.getElementById('msg');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    msg.className = 'msg';
+    if (SCRIPT_URL.indexOf('http') !== 0) {
+      msg.textContent = '⚠ Backend not connected yet — Apps Script URL to be added.';
+      msg.className = 'msg err';
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'SENDING…';
+    try {
+      const data = new FormData();
+      data.append('Executive Name', execName.value);
+      data.append('Location', execLoc.value);
+      data.append('Update Week', document.getElementById('updateWeek').value);
+
+      const entries = entriesBox.querySelectorAll('.entry');
+      data.append('Entry Count', entries.length);
+      entries.forEach((en, i) => {
+        const n = i + 1;
+        en.querySelectorAll('[data-f]').forEach(el => {
+          data.append(el.getAttribute('data-f') + ' ' + n, el.value || '');
+        });
+      });
+
+      await fetch(SCRIPT_URL, { method: 'POST', body: data, mode: 'no-cors' });
+      msg.textContent = '✔ ' + entries.length + ' prospect update' + (entries.length > 1 ? 's' : '') + ' sent. Thank you!';
+      msg.className = 'msg ok';
+      form.reset();
+      entriesBox.innerHTML = '';
+      addEntry();
+    } catch (err) {
+      msg.textContent = '✖ Could not send. Check internet & retry.';
+      msg.className = 'msg err';
+    }
+    btn.disabled = false;
+    btn.textContent = 'SUBMIT ALL';
+  });
+</script>
+</body>
+</html>
