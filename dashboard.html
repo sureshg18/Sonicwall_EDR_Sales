@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SonicWall EDR – Management Dashboard | eCAPS</title>
+<style>
+  :root{
+    --navy:#0e1b33; --navy2:#16264a; --orange:#ff6c0c; --orange-dark:#e55f06;
+    --grey:#f4f6fa; --border:#d9dfea; --text:#1c2436; --muted:#5c6a85;
+    --good:#177245; --amber:#9a6a00; --blue:#1c4f9c;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,Helvetica,sans-serif;}
+  body{min-height:100vh;background:var(--grey);color:var(--text);display:flex;flex-direction:column;}
+
+  header{background:#fff;border-bottom:3px solid var(--orange);padding:14px 40px;
+    display:flex;align-items:center;justify-content:space-between;gap:20px;}
+  .title h1{font-size:22px;color:var(--navy);}
+  .title h1 span{color:var(--orange);}
+  .title p{font-size:12.5px;color:var(--muted);margin-top:2px;}
+  .logos{display:flex;align-items:center;gap:26px;}
+  .logos img.sw{height:32px;}
+  .logos img.ec{height:42px;}
+  .logos .sep{width:1px;height:36px;background:var(--border);}
+
+  main{flex:1;padding:20px 40px;max-width:1500px;margin:0 auto;width:100%;}
+
+  /* PIN gate */
+  #gate{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:50;}
+  .gate-box{background:#fff;border-radius:12px;padding:34px 38px;text-align:center;width:340px;}
+  .gate-box h2{font-size:17px;color:var(--navy);margin-bottom:6px;}
+  .gate-box p{font-size:12.5px;color:var(--muted);margin-bottom:16px;}
+  .gate-box input{width:100%;padding:11px;font-size:16px;text-align:center;letter-spacing:3px;
+    border:1px solid var(--border);border-radius:8px;outline:none;}
+  .gate-box input:focus{border-color:var(--orange);}
+  .gate-box button{width:100%;margin-top:12px;background:var(--orange);color:#fff;font-weight:800;
+    font-size:14px;border:none;border-radius:8px;padding:12px;cursor:pointer;}
+  .gate-err{color:#b02a2a;font-size:12.5px;margin-top:10px;display:none;}
+
+  /* Tiles */
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px;}
+  .tile{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px 18px;}
+  .tile .v{font-size:30px;font-weight:800;color:var(--navy);line-height:1.1;}
+  .tile .l{font-size:12px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.6px;}
+  .tile.warn .v{font-size:15px;color:#b02a2a;font-weight:700;line-height:1.4;}
+
+  /* Filters */
+  .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:#fff;
+    border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:18px;}
+  .filters select,.filters input[type=text]{padding:8px 10px;font-size:13px;border:1px solid var(--border);
+    border-radius:7px;background:#fff;color:var(--text);outline:none;}
+  .filters input[type=text]{width:200px;}
+  .filters label.toggle{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);cursor:pointer;}
+  .filters .spacer{flex:1;}
+  .fbtn{background:var(--navy);color:#fff;font-size:12.5px;font-weight:700;border:none;
+    border-radius:7px;padding:9px 16px;cursor:pointer;}
+  .fbtn.orange{background:var(--orange);}
+
+  /* Charts */
+  .charts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;}
+  .chart{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px 18px;}
+  .chart h3{font-size:12.5px;text-transform:uppercase;letter-spacing:1px;color:var(--orange-dark);margin-bottom:12px;}
+  .brow{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .brow .bl{width:110px;font-size:12.5px;color:var(--text);text-align:right;flex-shrink:0;}
+  .btrack{flex:1;background:var(--grey);border-radius:4px;height:14px;position:relative;}
+  .bfill{height:14px;background:var(--navy2);border-radius:0 4px 4px 0;min-width:2px;}
+  .brow .bv{font-size:12.5px;color:var(--text);font-weight:600;width:46px;flex-shrink:0;}
+
+  /* Table */
+  .tablebox{background:#fff;border:1px solid var(--border);border-radius:10px;padding:6px 0 2px;overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{position:sticky;top:0;background:#fff;text-align:left;padding:10px 12px;color:var(--muted);
+    font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;border-bottom:2px solid var(--grey);white-space:nowrap;}
+  td{padding:9px 12px;border-bottom:1px solid var(--grey);vertical-align:top;white-space:nowrap;}
+  tr.main:hover{background:#fff7f1;cursor:pointer;}
+  tr.detail td{background:#fafbfd;white-space:normal;color:var(--muted);font-size:12.5px;}
+  .chip{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11.5px;font-weight:700;}
+  .chip.s0{background:#e8effa;color:var(--blue);}
+  .chip.s1{background:#fff2d9;color:var(--amber);}
+  .chip.s2{background:#ffe9d9;color:var(--orange-dark);}
+  .chip.s3{background:#e8f7ee;color:var(--good);}
+  .count-note{font-size:12px;color:var(--muted);padding:10px 16px;}
+
+  footer{text-align:center;font-size:11.5px;color:var(--muted);padding:10px;}
+  @media (max-width:1000px){
+    .tiles{grid-template-columns:1fr 1fr;}
+    .charts{grid-template-columns:1fr;}
+    header{flex-direction:column;text-align:center;}
+    main{padding:16px 12px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- PIN gate -->
+<div id="gate">
+  <div class="gate-box">
+    <h2>SonicWall EDR — Dashboard</h2>
+    <p>eCAPS management access only</p>
+    <input type="password" id="pin" placeholder="PIN" maxlength="20">
+    <button id="pinBtn">OPEN DASHBOARD</button>
+    <div class="gate-err" id="gateErr">Wrong PIN or connection issue. Try again.</div>
+  </div>
+</div>
+
+<header>
+  <div class="title">
+    <h1>SonicWall EDR <span>— Management Dashboard</span></h1>
+    <p>Live view of all sales updates · Regional Directors &amp; Corp only</p>
+  </div>
+  <div class="logos">
+    <img class="sw" src="https://raw.githubusercontent.com/sureshg18/brand-assets/main/sonicwall_logo_web.png" alt="SonicWall">
+    <div class="sep"></div>
+    <img class="ec" src="https://raw.githubusercontent.com/sureshg18/brand-assets/main/ecaps_logo_web.png" alt="eCAPS">
+  </div>
+</header>
+
+<main>
+  <div class="tiles">
+    <div class="tile"><div class="v" id="tProspects">–</div><div class="l">Prospects in pipeline</div></div>
+    <div class="tile"><div class="v" id="tUsers">–</div><div class="l">EDR users at stake</div></div>
+    <div class="tile"><div class="v" id="tWeek">–</div><div class="l">Updates this week</div></div>
+    <div class="tile warn"><div class="v" id="tMissing">–</div><div class="l">No update this week</div></div>
+  </div>
+
+  <div class="filters">
+    <select id="fExec"><option value="">All executives</option></select>
+    <select id="fLoc"><option value="">All locations</option></select>
+    <select id="fStatus"><option value="">All statuses</option></select>
+    <select id="fWeek"><option value="">All weeks</option></select>
+    <input type="text" id="fSearch" placeholder="Search prospect / partner…">
+    <label class="toggle"><input type="checkbox" id="fLatest" checked> Latest per prospect</label>
+    <div class="spacer"></div>
+    <button class="fbtn" id="csvBtn">⬇ Export CSV</button>
+    <button class="fbtn orange" id="refreshBtn">⟳ Refresh</button>
+  </div>
+
+  <div class="charts">
+    <div class="chart"><h3>Cases by Status</h3><div id="chStatus"></div></div>
+    <div class="chart"><h3>EDR Users by Location</h3><div id="chLoc"></div></div>
+  </div>
+
+  <div class="tablebox">
+    <table>
+      <thead><tr>
+        <th>Date</th><th>Week</th><th>Executive</th><th>Location</th><th>Prospect</th>
+        <th>Partner</th><th>Users</th><th>Current AV</th><th>Status</th><th>Closure</th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="count-note" id="countNote"></div>
+  </div>
+</main>
+
+<footer>© eCAPS Computers India Pvt Ltd · SonicWall EDR Sales Desk · Confidential</footer>
+
+<script>
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzWoB-JJXiwcslftHjz_C6eM-rsK0Aj9e4y61VSjrkdUAclft4NueyL3FZCvTIPkeMF/exec";
+
+  const STATUS_ORDER = ['New Lead', 'In Discussion', 'Proposal Given', 'Closed'];
+  const ALL_EXECS = ['Sarala', 'Krishna', 'GPS', 'Naveen', 'JiJo', 'Daniel'];
+
+  let COLS = {};     // header name -> index
+  let DATA = [];     // raw rows
+
+  /* ── PIN gate ── */
+  const gate = document.getElementById('gate');
+  const pinInput = document.getElementById('pin');
+  const gateErr = document.getElementById('gateErr');
+  document.getElementById('pinBtn').addEventListener('click', tryLoad);
+  pinInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryLoad(); });
+
+  async function tryLoad(){
+    gateErr.style.display = 'none';
+    try {
+      const res = await fetch(SCRIPT_URL + '?key=' + encodeURIComponent(pinInput.value));
+      const j = await res.json();
+      if (!j.ok) throw new Error('bad pin');
+      j.header.forEach((h, i) => COLS[h] = i);
+      DATA = j.rows;
+      gate.style.display = 'none';
+      buildFilters();
+      render();
+    } catch (err) {
+      gateErr.style.display = 'block';
+    }
+  }
+  document.getElementById('refreshBtn').addEventListener('click', tryLoad);
+
+  /* ── Helpers ── */
+  const g = (row, name) => row[COLS[name]] !== undefined ? row[COLS[name]] : '';
+  const ts = row => new Date(g(row, 'Timestamp'));
+
+  function latestPerProspect(rows){
+    const map = {};
+    rows.forEach(r => {
+      const key = (g(r,'Executive Name') + '|' + String(g(r,'Prospect Name')).trim().toLowerCase());
+      if (!map[key] || ts(r) > ts(map[key])) map[key] = r;
+    });
+    return Object.values(map);
+  }
+
+  function filtered(){
+    const fe = document.getElementById('fExec').value;
+    const fl = document.getElementById('fLoc').value;
+    const fs = document.getElementById('fStatus').value;
+    const fw = document.getElementById('fWeek').value;
+    const q  = document.getElementById('fSearch').value.trim().toLowerCase();
+    let rows = DATA.filter(r =>
+      (!fe || g(r,'Executive Name') === fe) &&
+      (!fl || g(r,'Location') === fl) &&
+      (!fs || g(r,'Status') === fs) &&
+      (!fw || g(r,'Update Week') === fw) &&
+      (!q  || String(g(r,'Prospect Name')).toLowerCase().includes(q) ||
+              String(g(r,'Partner Name')).toLowerCase().includes(q))
+    );
+    if (document.getElementById('fLatest').checked) rows = latestPerProspect(rows);
+    return rows.sort((a,b) => ts(b) - ts(a));
+  }
+
+  function buildFilters(){
+    const fill = (id, vals) => {
+      const sel = document.getElementById(id);
+      const keep = sel.value;
+      sel.length = 1;
+      vals.forEach(v => { const o = document.createElement('option'); o.textContent = v; sel.appendChild(o); });
+      sel.value = keep;
+    };
+    const uniq = name => [...new Set(DATA.map(r => g(r, name)).filter(Boolean))];
+    fill('fExec', ALL_EXECS.filter(e => uniq('Executive Name').includes(e)).concat(uniq('Executive Name').filter(e => !ALL_EXECS.includes(e))));
+    fill('fLoc', uniq('Location'));
+    fill('fStatus', STATUS_ORDER.filter(s => uniq('Status').includes(s)));
+    fill('fWeek', uniq('Update Week').sort().reverse());
+  }
+
+  ['fExec','fLoc','fStatus','fWeek','fLatest'].forEach(id =>
+    document.getElementById(id).addEventListener('change', render));
+  document.getElementById('fSearch').addEventListener('input', render);
+
+  /* ── Rendering ── */
+  function bars(el, pairs, fmt){
+    el.innerHTML = '';
+    const max = Math.max(1, ...pairs.map(p => p[1]));
+    pairs.forEach(([label, val]) => {
+      const rowEl = document.createElement('div');
+      rowEl.className = 'brow';
+      rowEl.title = label + ': ' + fmt(val);
+      rowEl.innerHTML =
+        '<div class="bl">' + label + '</div>' +
+        '<div class="btrack"><div class="bfill" style="width:' + (val / max * 100) + '%"></div></div>' +
+        '<div class="bv">' + fmt(val) + '</div>';
+      el.appendChild(rowEl);
+    });
+    if (!pairs.length) el.innerHTML = '<div style="color:var(--muted);font-size:12.5px;">No data yet</div>';
+  }
+
+  function chipClass(status){
+    const i = STATUS_ORDER.indexOf(status);
+    return 'chip s' + (i >= 0 ? i : 0);
+  }
+
+  function fmtDate(d){
+    const x = new Date(d);
+    return isNaN(x) ? '' : x.getDate().toString().padStart(2,'0') + '-' +
+      ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][x.getMonth()] + '-' + x.getFullYear().toString().slice(2);
+  }
+
+  function render(){
+    const rows = filtered();
+
+    // Tiles (pipeline = latest per prospect of ALL data, excluding Closed for "at stake")
+    const latestAll = latestPerProspect(DATA);
+    const open = latestAll.filter(r => g(r,'Status') !== 'Closed');
+    document.getElementById('tProspects').textContent = latestAll.length;
+    document.getElementById('tUsers').textContent =
+      open.reduce((s,r) => s + (parseInt(g(r,'Number of EDR Users'),10) || 0), 0).toLocaleString('en-IN');
+
+    const weekAgo = Date.now() - 7*86400000;
+    const thisWeek = DATA.filter(r => ts(r).getTime() >= weekAgo);
+    document.getElementById('tWeek').textContent = thisWeek.length;
+    const submitted = new Set(thisWeek.map(r => g(r,'Executive Name')));
+    const missing = ALL_EXECS.filter(n => !submitted.has(n));
+    document.getElementById('tMissing').textContent = missing.length ? missing.join(', ') : 'None ✓';
+
+    // Charts (respect current filters)
+    bars(document.getElementById('chStatus'),
+      STATUS_ORDER.map(s => [s, rows.filter(r => g(r,'Status') === s).length]).filter(p => p[1] > 0),
+      v => String(v));
+    const locs = {};
+    rows.forEach(r => {
+      const l = g(r,'Location') || '?';
+      locs[l] = (locs[l] || 0) + (parseInt(g(r,'Number of EDR Users'),10) || 0);
+    });
+    bars(document.getElementById('chLoc'),
+      Object.entries(locs).sort((a,b) => b[1]-a[1]),
+      v => v.toLocaleString('en-IN'));
+
+    // Table
+    const tbody = document.getElementById('tbody');
+    tbody.innerHTML = '';
+    rows.forEach(r => {
+      const tr = document.createElement('tr');
+      tr.className = 'main';
+      tr.innerHTML =
+        '<td>' + fmtDate(g(r,'Timestamp')) + '</td>' +
+        '<td>' + String(g(r,'Update Week')).replace(/\s*\(.*\)/,'') + '</td>' +
+        '<td>' + g(r,'Executive Name') + '</td>' +
+        '<td>' + g(r,'Location') + '</td>' +
+        '<td><b>' + g(r,'Prospect Name') + '</b></td>' +
+        '<td>' + g(r,'Partner Name') + '</td>' +
+        '<td>' + g(r,'Number of EDR Users') + '</td>' +
+        '<td>' + (g(r,'Current AV or EDR') === 'Others' ? g(r,'Other AV Name') : g(r,'Current AV or EDR')) + '</td>' +
+        '<td><span class="' + chipClass(g(r,'Status')) + '">' + g(r,'Status') + '</span></td>' +
+        '<td>' + g(r,'Expected Closure') + '</td>';
+      const dtr = document.createElement('tr');
+      dtr.className = 'detail';
+      dtr.style.display = 'none';
+      dtr.innerHTML = '<td colspan="10"><b>Remarks:</b> ' + (g(r,'Remarks') || '-') +
+                      ' &nbsp;·&nbsp; <b>Next action:</b> ' + (g(r,'Next Action') || '-') +
+                      ' &nbsp;·&nbsp; <b>Prospect base:</b> ' + (g(r,'Prospect Base') || '-') + '</td>';
+      tr.addEventListener('click', () => {
+        dtr.style.display = (dtr.style.display === 'none') ? 'table-row' : 'none';
+      });
+      tbody.appendChild(tr);
+      tbody.appendChild(dtr);
+    });
+    document.getElementById('countNote').textContent =
+      rows.length + ' record(s) shown' +
+      (document.getElementById('fLatest').checked ? ' · latest entry per prospect (untick to see full history)' : ' · full history');
+  }
+
+  /* ── CSV export ── */
+  document.getElementById('csvBtn').addEventListener('click', () => {
+    const rows = filtered();
+    const names = ['Timestamp','Update Week','Executive Name','Location','Prospect Name','Prospect Base',
+                   'Partner Name','Number of EDR Users','Current AV or EDR','Other AV Name','Status',
+                   'Expected Closure','Remarks','Next Action'];
+    const esc = v => '"' + String(v == null ? '' : v).replace(/"/g,'""') + '"';
+    const csv = [names.map(esc).join(',')]
+      .concat(rows.map(r => names.map(n => esc(g(r,n))).join(','))).join('\r\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+    a.download = 'EDR-updates-export.csv';
+    a.click();
+  });
+</script>
+</body>
+</html>

@@ -54,7 +54,10 @@
   .exec-strip .field{margin:0;}
   .exec-strip .field.name{width:220px;}
   .exec-strip .field.loc{width:170px;}
+  .exec-strip .field.pinf{width:100px;}
   .exec-strip .field.week{width:320px;}
+  input.pin-ok{border-color:#177245 !important;box-shadow:0 0 0 3px rgba(23,114,69,.15) !important;}
+  input.pin-bad{border-color:#b02a2a !important;box-shadow:0 0 0 3px rgba(176,42,42,.12) !important;}
 
   .field{margin-bottom:13px;}
   label{display:block;font-size:12.5px;font-weight:600;margin-bottom:4px;}
@@ -213,6 +216,10 @@
       <label>Location</label>
       <input type="text" name="Location" id="execLocation" readonly tabindex="-1" placeholder="Auto" class="locked">
     </div>
+    <div class="field pinf">
+      <label>PIN <span class="req">*</span></label>
+      <input type="password" id="execPin" required maxlength="4" inputmode="numeric" placeholder="••••" autocomplete="off">
+    </div>
     <div class="field week">
       <label>Update Week <span class="req">*</span></label>
       <select name="Update Week" id="updateWeek" required></select>
@@ -308,7 +315,7 @@
 
 <script>
   // ── PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL (ver2) BETWEEN THE QUOTES ──
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyFsIo4miXVkMGD28ZjRnCZBAW58u3jkgecGi8e1YEEY5WE4O2toHSO0ss-3ebUhJ7Epw/exec";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzWoB-JJXiwcslftHjz_C6eM-rsK0Aj9e4y61VSjrkdUAclft4NueyL3FZCvTIPkeMF/exec";
   const MAX_ENTRIES = 4;
 
   // Executive → Location auto-select
@@ -320,11 +327,34 @@
     'JiJo':    'Kerala',
     'Daniel':  'Chennai'
   };
+  // Executive → PIN (each executive has his/her own secret 4-digit PIN)
+  const EXEC_PIN = {
+    'Sarala':  '6252',
+    'Krishna': '2502',
+    'GPS':     '3181',
+    'Naveen':  '5382',
+    'JiJo':    '8513',
+    'Daniel':  '4581'
+  };
+
   const execName = document.getElementById('execName');
   const execLoc  = document.getElementById('execLocation');
+  const execPin  = document.getElementById('execPin');
+
+  function pinValid(){
+    return execName.value && execPin.value === EXEC_PIN[execName.value];
+  }
+  function pinFeedback(){
+    execPin.classList.remove('pin-ok','pin-bad');
+    if (execPin.value.length === 4) {
+      execPin.classList.add(pinValid() ? 'pin-ok' : 'pin-bad');
+    }
+  }
   execName.addEventListener('change', () => {
     execLoc.value = EXEC_LOCATION[execName.value] || '';
+    pinFeedback();
   });
+  execPin.addEventListener('input', pinFeedback);
 
   // ── Update Week: current & previous, numbered from April 1 (financial year) ──
   (function buildWeeks(){
@@ -412,12 +442,19 @@
       msg.className = 'msg err';
       return;
     }
+    if (!pinValid()) {
+      msg.textContent = '✖ Wrong PIN. Enter your own 4-digit PIN to submit.';
+      msg.className = 'msg err';
+      execPin.focus();
+      return;
+    }
     btn.disabled = true;
     btn.textContent = 'SENDING…';
     try {
       const data = new FormData();
       data.append('Executive Name', execName.value);
       data.append('Location', execLoc.value);
+      data.append('PIN', execPin.value);
       data.append('Update Week', document.getElementById('updateWeek').value);
 
       const entries = entriesBox.querySelectorAll('.entry');
