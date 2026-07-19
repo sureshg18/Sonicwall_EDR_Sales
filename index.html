@@ -256,8 +256,31 @@
         <input type="text" data-f="Prospect Name" required placeholder="End customer name">
       </div>
       <div class="field">
-        <label>Prospect Base</label>
-        <input type="text" data-f="Prospect Base" placeholder="Industry / vertical / city">
+        <label>Industry / Vertical</label>
+        <select data-f="Industry / Vertical" class="indSel">
+          <option value="" selected disabled>Select industry</option>
+          <option>Manufacturing</option>
+          <option>Textiles / Garments</option>
+          <option>Automotive / Auto Components</option>
+          <option>IT / ITES</option>
+          <option>BFSI (Banking / Finance / Insurance)</option>
+          <option>Healthcare / Hospitals</option>
+          <option>Pharma / Life Sciences</option>
+          <option>Education / Institutions</option>
+          <option>Retail / E-commerce</option>
+          <option>Logistics / Warehousing</option>
+          <option>Construction / Real Estate / Infra</option>
+          <option>Energy / Power / Utilities</option>
+          <option>Hospitality / Hotels</option>
+          <option>Government / PSU</option>
+          <option>Professional Services (CA / Legal / Consulting)</option>
+          <option>NGO / Trust</option>
+          <option>Others</option>
+        </select>
+      </div>
+      <div class="field otherInd" style="display:none;">
+        <label>If Others — specify industry</label>
+        <input type="text" data-f="Other Industry" placeholder="Type the industry">
       </div>
       <div class="field">
         <label>Partner Name <span class="req">*</span></label>
@@ -396,11 +419,18 @@
     const node = template.content.cloneNode(true);
     const entry = node.querySelector('.entry');
 
-    // Others → show specify box
+    // Others → show specify box (AV brand)
     const avSel = entry.querySelector('.avSel');
     const otherField = entry.querySelector('.otherAv');
     avSel.addEventListener('change', () => {
       otherField.style.display = (avSel.value === 'Others') ? 'block' : 'none';
+    });
+
+    // Others → show specify box (Industry)
+    const indSel = entry.querySelector('.indSel');
+    const otherInd = entry.querySelector('.otherInd');
+    indSel.addEventListener('change', () => {
+      otherInd.style.display = (indSel.value === 'Others') ? 'block' : 'none';
     });
 
     // Remove button

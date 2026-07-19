@@ -317,7 +317,8 @@
       dtr.style.display = 'none';
       dtr.innerHTML = '<td colspan="10"><b>Remarks:</b> ' + (g(r,'Remarks') || '-') +
                       ' &nbsp;·&nbsp; <b>Next action:</b> ' + (g(r,'Next Action') || '-') +
-                      ' &nbsp;·&nbsp; <b>Prospect base:</b> ' + (g(r,'Prospect Base') || '-') + '</td>';
+                      ' &nbsp;·&nbsp; <b>Industry:</b> ' +
+                      ((g(r,'Industry / Vertical') === 'Others' ? g(r,'Other Industry') : g(r,'Industry / Vertical')) || '-') + '</td>';
       tr.addEventListener('click', () => {
         dtr.style.display = (dtr.style.display === 'none') ? 'table-row' : 'none';
       });
@@ -332,8 +333,8 @@
   /* ── CSV export ── */
   document.getElementById('csvBtn').addEventListener('click', () => {
     const rows = filtered();
-    const names = ['Timestamp','Update Week','Executive Name','Location','Prospect Name','Prospect Base',
-                   'Partner Name','Number of EDR Users','Current AV or EDR','Other AV Name','Status',
+    const names = ['Timestamp','Update Week','Executive Name','Location','Prospect Name','Industry / Vertical',
+                   'Other Industry','Partner Name','Number of EDR Users','Current AV or EDR','Other AV Name','Status',
                    'Expected Closure','Remarks','Next Action'];
     const esc = v => '"' + String(v == null ? '' : v).replace(/"/g,'""') + '"';
     const csv = [names.map(esc).join(',')]
