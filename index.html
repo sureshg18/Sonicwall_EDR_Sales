@@ -172,12 +172,66 @@
 
   footer{text-align:center;font-size:11.5px;color:var(--muted);padding:10px;}
 
+  /* ── My Cases panel ── */
+  .mycases{
+    background:#fff;
+    border:1px solid var(--border);
+    border-left:4px solid #16264a;
+    border-radius:10px;
+    padding:14px 22px;
+    margin-bottom:20px;
+    display:none;
+  }
+  .mycases h3{
+    font-size:12.5px;text-transform:uppercase;letter-spacing:1px;
+    color:var(--navy);margin-bottom:10px;
+  }
+  .mycases h3 span{color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;}
+  .case-chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .case-chip{
+    border:1px solid var(--border);
+    background:var(--grey);
+    border-radius:20px;
+    padding:7px 14px;
+    font-size:12.5px;
+    cursor:pointer;
+    transition:all .12s;
+  }
+  .case-chip:hover{border-color:var(--orange);background:#fff4ec;}
+  .case-chip b{color:var(--navy);}
+  .case-chip .st{color:var(--muted);font-size:11.5px;}
+  .mycases .hint{font-size:11.5px;color:var(--muted);margin-top:8px;}
+  .updating-tag{
+    background:#e8effa;color:#1c4f9c;border-radius:20px;
+    font-size:11px;font-weight:700;padding:2px 10px;margin-left:8px;
+  }
+  .dup-warn{
+    display:none;font-size:11.5px;color:#9a6a00;background:#fff2d9;
+    border:1px solid #f0d9a0;border-radius:6px;padding:5px 9px;margin-top:5px;
+  }
+
+  /* ── Mobile polish ── */
   @media (max-width:1000px){
     .egrid{grid-template-columns:1fr 1fr;}
     .egrid .span2{grid-column:span 2;}
     header{flex-direction:column;text-align:center;}
     main{padding:18px 14px;}
     .exec-strip .field{width:100% !important;}
+  }
+  @media (max-width:640px){
+    header{padding:12px 14px;}
+    .title h1{font-size:19px;}
+    .logos img.sw{height:24px;}
+    .logos img.ec{height:32px;}
+    .egrid{grid-template-columns:1fr;}
+    .egrid .span2{grid-column:span 1;}
+    input,select,textarea{font-size:16px;padding:12px;}  /* 16px stops iPhone auto-zoom */
+    .btn{width:100%;padding:15px;}
+    .add-btn{padding:14px;}
+    .entry{padding:14px;}
+    .exec-strip{padding:12px 14px;gap:12px;}
+    .submit-row{flex-direction:column;gap:12px;}
+    .case-chip{padding:10px 14px;font-size:13.5px;}
   }
 </style>
 </head>
@@ -186,7 +240,7 @@
 <header>
   <div class="title">
     <h1>SonicWall EDR <span>— Sales Update Sheet</span></h1>
-    <p>eCAPS internal sales team · one update, multiple prospects · v2</p>
+    <p>eCAPS internal sales team · one update, multiple prospects · v7</p>
   </div>
   <div class="logos">
     <img class="sw" src="https://raw.githubusercontent.com/sureshg18/brand-assets/main/sonicwall_logo_web.png" alt="SonicWall">
@@ -226,6 +280,13 @@
     </div>
   </div>
 
+  <!-- My Cases (appears after correct PIN) -->
+  <div class="mycases" id="mycases">
+    <h3>My Open Cases <span id="mycasesCount"></span></h3>
+    <div class="case-chips" id="caseChips"></div>
+    <div class="hint">Tap a case to load its details below — change status/remarks and submit. Closed cases drop off automatically.</div>
+  </div>
+
   <!-- Prospect entries -->
   <div id="entries"></div>
 
@@ -252,8 +313,9 @@
     </div>
     <div class="egrid">
       <div class="field span2">
-        <label>Prospect / Customer Name <span class="req">*</span></label>
+        <label>Prospect / Customer Name <span class="req">*</span> <span class="updating-tag" style="display:none;">UPDATING EXISTING CASE</span></label>
         <input type="text" data-f="Prospect Name" required placeholder="End customer name">
+        <div class="dup-warn">⚠ This prospect already exists in your cases — tap it in "My Open Cases" above to update it instead of creating a duplicate.</div>
       </div>
       <div class="field">
         <label>Industry / Vertical</label>
@@ -289,6 +351,10 @@
       <div class="field">
         <label>Number of EDR Users <span class="req">*</span></label>
         <input type="number" data-f="Number of EDR Users" required min="1" placeholder="e.g. 150">
+      </div>
+      <div class="field">
+        <label>Approx. Deal Value (₹)</label>
+        <input type="number" data-f="Deal Value" min="0" step="1000" placeholder="e.g. 250000">
       </div>
       <div class="field">
         <label>Current AV / EDR in Use</label>
@@ -370,7 +436,11 @@
   function pinFeedback(){
     execPin.classList.remove('pin-ok','pin-bad');
     if (execPin.value.length === 4) {
-      execPin.classList.add(pinValid() ? 'pin-ok' : 'pin-bad');
+      const ok = pinValid();
+      execPin.classList.add(ok ? 'pin-ok' : 'pin-bad');
+      if (ok) loadMyCases(); else hideMyCases();
+    } else {
+      hideMyCases();
     }
   }
   execName.addEventListener('change', () => {
@@ -378,6 +448,92 @@
     pinFeedback();
   });
   execPin.addEventListener('input', pinFeedback);
+
+  /* ── My Cases: fetch this executive's open cases with his PIN ── */
+  const mycasesBox = document.getElementById('mycases');
+  const caseChips  = document.getElementById('caseChips');
+  let MY_CASES = [];        // latest open case objects
+  let MY_CASE_NAMES = new Set();
+
+  function hideMyCases(){
+    mycasesBox.style.display = 'none';
+    MY_CASES = [];
+    MY_CASE_NAMES = new Set();
+  }
+
+  async function loadMyCases(){
+    if (SCRIPT_URL.indexOf('http') !== 0) return;
+    caseChips.innerHTML = '<span style="color:var(--muted);font-size:12.5px;">Loading your cases…</span>';
+    mycasesBox.style.display = 'block';
+    try {
+      const res = await fetch(SCRIPT_URL + '?action=mycases&exec=' + encodeURIComponent(execName.value) +
+                              '&key=' + encodeURIComponent(execPin.value));
+      const j = await res.json();
+      if (!j.ok) throw new Error('denied');
+      const col = {};
+      j.header.forEach((h, i) => col[h] = i);
+      // latest row per prospect
+      const map = {};
+      j.rows.forEach(r => {
+        const key = String(r[col['Prospect Name']] || '').trim().toLowerCase();
+        if (!key) return;
+        if (!map[key] || new Date(r[col['Timestamp']]) > new Date(map[key][col['Timestamp']])) map[key] = r;
+      });
+      // open cases only
+      MY_CASES = Object.values(map)
+        .filter(r => r[col['Status']] !== 'Closed')
+        .map(r => {
+          const o = {};
+          Object.keys(col).forEach(h => o[h] = r[col[h]]);
+          return o;
+        })
+        .sort((a,b) => new Date(b['Timestamp']) - new Date(a['Timestamp']));
+      MY_CASE_NAMES = new Set(MY_CASES.map(c => String(c['Prospect Name']).trim().toLowerCase()));
+
+      document.getElementById('mycasesCount').textContent = '(' + MY_CASES.length + ')';
+      caseChips.innerHTML = '';
+      if (!MY_CASES.length) {
+        caseChips.innerHTML = '<span style="color:var(--muted);font-size:12.5px;">No open cases yet — add your first prospect below.</span>';
+        return;
+      }
+      MY_CASES.forEach(c => {
+        const chip = document.createElement('div');
+        chip.className = 'case-chip';
+        chip.innerHTML = '<b>' + c['Prospect Name'] + '</b> <span class="st">· ' + (c['Status'] || '') + '</span>';
+        chip.addEventListener('click', () => prefillCase(c));
+        caseChips.appendChild(chip);
+      });
+    } catch (err) {
+      caseChips.innerHTML = '<span style="color:#b02a2a;font-size:12.5px;">Could not load cases — check internet and PIN.</span>';
+    }
+  }
+
+  function prefillCase(c){
+    // use the first entry card if its prospect name is empty, else add a new one
+    let entry = null;
+    entriesBox.querySelectorAll('.entry').forEach(en => {
+      if (!entry && !en.querySelector('[data-f="Prospect Name"]').value.trim()) entry = en;
+    });
+    if (!entry) {
+      addEntry();
+      const all = entriesBox.querySelectorAll('.entry');
+      entry = all[all.length - 1];
+      if (!entry) return; // hit max entries
+    }
+    entry.querySelectorAll('[data-f]').forEach(el => {
+      const v = c[el.getAttribute('data-f')];
+      if (v !== undefined && v !== null) el.value = v;
+    });
+    // trigger the Others boxes if needed
+    const avSel = entry.querySelector('.avSel');
+    entry.querySelector('.otherAv').style.display = (avSel.value === 'Others') ? 'block' : 'none';
+    const indSel = entry.querySelector('.indSel');
+    entry.querySelector('.otherInd').style.display = (indSel.value === 'Others') ? 'block' : 'none';
+    // show "updating" tag, hide dup warning
+    entry.querySelector('.updating-tag').style.display = 'inline-block';
+    entry.querySelector('.dup-warn').style.display = 'none';
+    entry.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 
   // ── Update Week: current & previous, numbered from April 1 (financial year) ──
   (function buildWeeks(){
@@ -431,6 +587,16 @@
     const otherInd = entry.querySelector('.otherInd');
     indSel.addEventListener('change', () => {
       otherInd.style.display = (indSel.value === 'Others') ? 'block' : 'none';
+    });
+
+    // Duplicate-prospect warning while typing
+    const nameInput = entry.querySelector('[data-f="Prospect Name"]');
+    const dupWarn = entry.querySelector('.dup-warn');
+    const updTag = entry.querySelector('.updating-tag');
+    nameInput.addEventListener('input', () => {
+      updTag.style.display = 'none';   // manual typing = not a loaded case anymore
+      const v = nameInput.value.trim().toLowerCase();
+      dupWarn.style.display = (v && MY_CASE_NAMES.has(v)) ? 'block' : 'none';
     });
 
     // Remove button
@@ -499,9 +665,9 @@
       await fetch(SCRIPT_URL, { method: 'POST', body: data, mode: 'no-cors' });
       msg.textContent = '✔ ' + entries.length + ' prospect update' + (entries.length > 1 ? 's' : '') + ' sent. Thank you!';
       msg.className = 'msg ok';
-      form.reset();
-      entriesBox.innerHTML = '';
+      entriesBox.innerHTML = '';   // keep name/PIN/week — only clear the prospect cards
       addEntry();
+      loadMyCases();               // refresh the open-cases panel with the new statuses
     } catch (err) {
       msg.textContent = '✖ Could not send. Check internet & retry.';
       msg.className = 'msg err';
