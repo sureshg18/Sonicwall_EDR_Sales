@@ -12,60 +12,73 @@
   }
   *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,Helvetica,sans-serif;}
   body{min-height:100vh;background:var(--grey);color:var(--text);display:flex;flex-direction:column;}
-  header{background:#fff;border-bottom:3px solid var(--orange);padding:14px 40px;
+  header{background:#fff;border-bottom:3px solid var(--orange);padding:8px 28px;
     display:flex;align-items:center;justify-content:space-between;gap:20px;}
-  .title h1{font-size:22px;color:var(--navy);}
+  .title h1{font-size:18px;color:var(--navy);}
   .title h1 span{color:var(--orange);}
-  .title p{font-size:12.5px;color:var(--muted);margin-top:2px;}
-  .logos{display:flex;align-items:center;gap:26px;}
-  .logos img.sw{height:32px;}
-  .logos img.ec{height:42px;}
-  .logos .sep{width:1px;height:36px;background:var(--border);}
-  main{flex:1;padding:22px 40px;max-width:980px;margin:0 auto;width:100%;}
-  .card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin-bottom:18px;}
-  .card h2{font-size:12.5px;text-transform:uppercase;letter-spacing:1px;color:var(--orange-dark);
-    border-bottom:2px solid var(--grey);padding-bottom:8px;margin-bottom:14px;}
-  .row{display:flex;gap:16px;flex-wrap:wrap;}
-  .field{flex:1 1 220px;margin-bottom:13px;}
-  label{display:block;font-size:12.5px;font-weight:600;margin-bottom:4px;}
+  .title p{font-size:11px;color:var(--muted);margin-top:1px;}
+  .logos{display:flex;align-items:center;gap:18px;}
+  .logos img.sw{height:24px;}
+  .logos img.ec{height:32px;}
+  .logos .sep{width:1px;height:28px;background:var(--border);}
+  main{flex:1;padding:10px 28px 4px;max-width:1360px;margin:0 auto;width:100%;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start;}
+  .card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:11px 16px;margin-bottom:8px;}
+  .card h2{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--orange-dark);
+    border-bottom:2px solid var(--grey);padding-bottom:5px;margin-bottom:9px;}
+  .row{display:flex;gap:10px;flex-wrap:wrap;}
+  .field{flex:1 1 160px;margin-bottom:8px;}
+  label{display:block;font-size:11.5px;font-weight:600;margin-bottom:3px;}
   .req{color:var(--orange);}
-  input,select,textarea{width:100%;padding:9px 11px;font-size:13.5px;border:1px solid var(--border);
+  .opt{color:var(--muted);font-weight:400;}
+  input,select,textarea{width:100%;padding:7px 9px;font-size:13px;border:1px solid var(--border);
     border-radius:7px;background:#fff;color:var(--text);outline:none;}
   input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(255,108,12,.14);}
-  textarea{resize:vertical;min-height:64px;}
-  input.locked{background:var(--grey);color:var(--navy);font-weight:600;pointer-events:none;}
+  textarea{resize:vertical;min-height:60px;}
+  input.locked{background:var(--grey);color:var(--navy);font-weight:600;}
   input.pin-ok{border-color:#177245 !important;box-shadow:0 0 0 3px rgba(23,114,69,.15) !important;}
   input.pin-bad{border-color:#b02a2a !important;box-shadow:0 0 0 3px rgba(176,42,42,.12) !important;}
 
-  .seg{display:flex;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;width:max-content;}
-  .seg button{border:none;background:#fff;padding:9px 18px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;}
+  .seg{display:flex;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;width:max-content;max-width:100%;}
+  .seg button{border:none;background:#fff;padding:7px 13px;font-size:11.5px;font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap;}
   .seg button.on{background:var(--orange);color:#fff;}
 
-  .calc{background:var(--grey);border-radius:8px;padding:14px 16px;font-size:13.5px;margin-top:8px;}
-  .calc b{color:var(--navy);}
-  .calc .tot{font-size:16px;color:var(--orange-dark);font-weight:800;}
-  .calc .words{font-size:12px;color:var(--muted);margin-top:4px;}
+  .optbox{background:var(--grey);border-radius:8px;padding:8px 12px;margin-top:8px;}
+  .optbox h3{font-size:10.5px;color:var(--navy);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;}
+  .optbox .field{margin-bottom:4px;}
+  .calc{font-size:12px;margin-top:3px;}
+  .calc .tot{font-size:13.5px;color:var(--orange-dark);font-weight:800;}
+  .calc .words{font-size:10.5px;color:var(--muted);margin-top:1px;}
 
-  .btn{background:var(--orange);color:#fff;font-size:15px;font-weight:800;letter-spacing:.5px;
-    border:none;border-radius:9px;padding:13px 60px;cursor:pointer;display:block;margin:6px auto 0;}
-  .btn:hover{background:var(--orange-dark);}
-  .btn:disabled{background:#c9ced9;cursor:not-allowed;}
-  .msg{display:none;padding:10px 18px;border-radius:8px;font-size:13.5px;font-weight:600;margin:12px auto 0;text-align:center;max-width:560px;}
-  .msg.err{display:block;background:#fdecec;color:#b02a2a;border:1px solid #f2c4c4;}
-  footer{text-align:center;font-size:11.5px;color:var(--muted);padding:10px;}
-  #locked-note{max-width:560px;margin:6px auto 0;text-align:center;font-size:12px;color:var(--muted);}
-
-  /* printable proposal (revealed only during generation, under the overlay) */
-  #pdfArea{display:none;width:790px;background:#fff;color:#1c2436;margin:0 auto;}
-  #genOverlay{
-    display:none;position:fixed;inset:0;background:rgba(14,27,51,.92);z-index:100;
-    align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:700;letter-spacing:.5px;
+  .int-note{font-size:11.5px;color:var(--muted);margin-top:6px;}
+  .dlbtn{
+    width:100%;background:var(--navy);color:#fff;font-size:12px;font-weight:700;
+    border:none;border-radius:7px;padding:8px 12px;cursor:pointer;
   }
-  @media (max-width:700px){
-    header{flex-direction:column;text-align:center;padding:12px 14px;}
-    main{padding:16px 12px;}
-    input,select,textarea{font-size:16px;padding:12px;}
-    .btn{width:100%;}
+  .dlbtn:hover{background:#16264a;}
+  .dlbtn:disabled{background:#c9ced9;cursor:not-allowed;}
+  .schemes{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px;}
+  .dlbtn.sch{background:#fff;color:var(--navy);border:1.5px solid var(--navy);padding:7px 8px;font-size:11.5px;}
+  .dlbtn.sch:hover{background:#eef2f9;}
+  .btn{background:var(--orange);color:#fff;font-size:14px;font-weight:800;letter-spacing:.5px;
+    border:none;border-radius:9px;padding:11px 20px;cursor:pointer;display:block;width:100%;margin:0;}
+  .btn:hover{background:var(--orange-dark);}
+  .msg{display:none;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;margin:8px auto 0;text-align:center;}
+  .msg.err{display:block;background:#fdecec;color:#b02a2a;border:1px solid #f2c4c4;}
+  footer{text-align:center;font-size:10.5px;color:var(--muted);padding:4px;}
+  #locked-note{margin:2px 0 0;font-size:11.5px;color:var(--muted);}
+
+  #pdfArea{display:none;width:790px;background:#fff;color:#1c2436;margin:0 auto;}
+  #genOverlay{display:none;position:fixed;inset:0;background:rgba(14,27,51,.92);z-index:100;
+    align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:700;letter-spacing:.5px;}
+
+  @media (max-width:900px){
+    .grid2{grid-template-columns:1fr;}
+    header{flex-direction:column;text-align:center;padding:10px 14px;}
+    main{padding:12px 12px;}
+    input,select,textarea{font-size:16px;padding:11px;}
+    .seg{width:100%;}
+    .seg button{flex:1;}
   }
 </style>
 </head>
@@ -85,9 +98,8 @@
 
 <main>
   <div class="card">
-    <h2>Executive Verification</h2>
-    <div class="row">
-      <div class="field" style="max-width:240px;">
+    <div class="row" style="align-items:flex-end;">
+      <div class="field" style="max-width:220px;">
         <label>Executive Name <span class="req">*</span></label>
         <select id="execName" required>
           <option value="" selected disabled>Name</option>
@@ -95,71 +107,120 @@
           <option>Naveen</option><option>JiJo</option><option>Daniel</option>
         </select>
       </div>
-      <div class="field" style="max-width:120px;">
+      <div class="field" style="max-width:100px;">
         <label>PIN <span class="req">*</span></label>
         <input type="password" id="execPin" maxlength="4" inputmode="numeric" placeholder="••••" autocomplete="off">
       </div>
+      <div class="field">
+        <div id="locked-note">Enter your name and PIN to unlock the proposal form.</div>
+      </div>
     </div>
-    <div id="locked-note">Enter your name and PIN to unlock the proposal form.</div>
   </div>
 
   <div id="formArea" style="display:none;">
-    <div class="card">
-      <h2>Customer Details</h2>
-      <div class="row">
-        <div class="field"><label>Customer Company Name <span class="req">*</span></label>
-          <input type="text" id="custName" placeholder="End customer company name"></div>
-        <div class="field"><label>Contact Person</label>
-          <input type="text" id="custContact" placeholder="Name of the contact person"></div>
-        <div class="field"><label>Channel Partner</label>
-          <input type="text" id="partnerName" placeholder="Partner handling this case (optional on PDF)"></div>
-      </div>
-      <div class="field"><label>Billing Address <span class="req">*</span></label>
-        <textarea id="custAddr" placeholder="Street, city, state, PIN code"></textarea></div>
-    </div>
+    <div class="grid2">
 
-    <div class="card">
-      <h2>Licence &amp; Pricing (all prices excluding GST)</h2>
-      <div class="row">
-        <div class="field" style="max-width:200px;">
-          <label>Number of EDR Users <span class="req">*</span></label>
-          <input type="number" id="users" min="1" placeholder="e.g. 150">
-        </div>
-        <div class="field" style="max-width:280px;">
-          <label>Subscription Tenure <span class="req">*</span></label>
-          <div class="seg" id="tenureSeg">
-            <button type="button" data-t="1">1 Year</button>
-            <button type="button" data-t="3">3 Years</button>
-            <button type="button" data-t="both">Both</button>
+      <div>
+        <div class="card">
+          <h2>Case Details (from CRM)</h2>
+          <div class="row">
+            <div class="field"><label>Customer Name</label>
+              <input type="text" id="custName" class="locked" placeholder="From CRM"></div>
+            <div class="field"><label>Partner Name</label>
+              <input type="text" id="partnerName" class="locked" placeholder="From CRM"></div>
+          </div>
+          <div class="field">
+            <label>Proposal addressed to? <span class="req">*</span></label>
+            <div class="seg" id="toSeg">
+              <button type="button" data-v="customer">End Customer</button>
+              <button type="button" data-v="partner">Channel Partner</button>
+            </div>
           </div>
         </div>
-        <div class="field" style="max-width:320px;">
-          <label>Pricing Mode <span class="req">*</span></label>
-          <div class="seg" id="modeSeg">
-            <button type="button" data-m="rate">₹ / user / year</button>
-            <button type="button" data-m="lump">Lump-sum</button>
+
+        <div class="card">
+          <h2>Contact Details <span class="opt">(optional)</span></h2>
+          <div class="field"><label>Contact Person Name</label>
+            <input type="text" id="contactName" placeholder="Name"></div>
+          <div class="row">
+            <div class="field"><label>Mobile</label>
+              <input type="tel" id="contactMobile" placeholder="Mobile number"></div>
+            <div class="field"><label>Email ID</label>
+              <input type="email" id="contactEmail" placeholder="Email address"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Supporting Downloads <span class="opt">(share separately)</span></h2>
+          <button type="button" class="dlbtn" id="dsBtn" style="margin-bottom:8px;">⬇ Product Data Sheet (PDF)</button>
+          <div class="row" style="align-items:flex-end;">
+            <div class="field"><label>Competition <span class="opt">(internal)</span></label>
+              <select id="competition">
+                <option value="" selected disabled>Select brand</option>
+                <option>Bitdefender</option>
+                <option>SentinelOne</option>
+                <option>CrowdStrike</option>
+                <option>Kaspersky</option>
+                <option>MS Defender</option>
+                <option>Quick Heal</option>
+                <option>eScan</option>
+                <option>K7</option>
+              </select>
+            </div>
+            <div class="field">
+              <button type="button" class="dlbtn" id="compBtn" disabled>⬇ Comparison (PDF)</button>
+            </div>
+          </div>
+          <div class="int-note" id="compNote"></div>
+          <label style="margin-top:8px;">Partner Schemes <span class="opt">(channel proposals)</span></label>
+          <div class="schemes">
+            <button type="button" class="dlbtn sch" data-s="EDR Launch Pack">🚀 EDR Launch Pack</button>
+            <button type="button" class="dlbtn sch" data-s="Loyalty Shield">🛡 Loyalty Shield</button>
+            <button type="button" class="dlbtn sch" data-s="EDR Test Drive">🏁 EDR Test Drive</button>
+            <button type="button" class="dlbtn sch" data-s="Complete the Wall">🧱 Complete the Wall</button>
           </div>
         </div>
       </div>
 
-      <div class="row" id="priceInputs"></div>
-      <div id="calcBox"></div>
-    </div>
+      <div>
+        <div class="card">
+          <h2>SonicWall EDR — Tenure &amp; Pricing <span class="opt">(prices excluding GST)</span></h2>
+          <div class="field">
+            <label>Subscription Tenure <span class="req">*</span></label>
+            <div class="seg" id="tenureSeg">
+              <button type="button" data-t="1">1 Year</button>
+              <button type="button" data-t="3">3 Years</button>
+              <button type="button" data-t="both">Both</button>
+            </div>
+          </div>
+          <div id="optionBoxes"></div>
+        </div>
 
-    <button class="btn" id="genBtn">⬇ DOWNLOAD PROPOSAL PDF</button>
-    <div class="msg" id="msg"></div>
+        <button class="btn" id="genBtn">⬇ DOWNLOAD PROPOSAL PDF (COMMERCIALS)</button>
+        <div class="msg" id="msg"></div>
+      </div>
+
+    </div>
   </div>
 </main>
 
 <footer>© eCAPS Computers India Pvt Ltd · Internal tool · Prices entered are the executive's responsibility</footer>
 
-<!-- ───────── Printable proposal (shown only while generating) ───────── -->
 <div id="genOverlay">⏳ Preparing your proposal PDF…</div>
 <div id="pdfArea"></div>
 
 <script>
   const EXEC_PIN = { 'Sarala':'6252','Krishna':'2502','GPS':'3181','Naveen':'5382','JiJo':'8513','Daniel':'4581' };
-  const DESIGNATION = 'Sales Executive';
+  const DESIGNATION = 'SonicWall Product Champion';
+  // Per-executive contact details shown in the signatory block (fill as provided)
+  const EXEC_CONTACT = {
+    'Sarala':  { email: 'sarala@caps.in',  mobile: '' },
+    'Krishna': { email: 'krishna@caps.in', mobile: '' },
+    'GPS':     { email: 'gps@caps.in',     mobile: '' },
+    'Naveen':  { email: 'naveen@caps.in',  mobile: '' },
+    'JiJo':    { email: 'jijo@caps.in',    mobile: '' },
+    'Daniel':  { email: 'daniel@caps.in',  mobile: '' }
+  };
   const PRODUCT = 'SonicWall EDR';
   const PRODUCT_DESC = 'Endpoint Detection & Response — per-user subscription licence';
 
@@ -178,18 +239,8 @@
   execName.addEventListener('change', checkPin);
   execPin.addEventListener('input', checkPin);
 
-  /* ── Prefill from CRM "Create Proposal" button (URL parameters) ── */
-  (function prefillFromCRM(){
-    const q = new URLSearchParams(location.search);
-    if (q.get('exec') && EXEC_PIN[q.get('exec')]) execName.value = q.get('exec');
-    if (q.get('cust'))    document.getElementById('custName').value = q.get('cust');
-    if (q.get('partner')) document.getElementById('partnerName').value = q.get('partner');
-    if (q.get('users'))   document.getElementById('users').value = q.get('users');
-    if (q.get('exec')) execPin.focus();   // just the PIN left to type
-  })();
-
-  /* ── Tenure & mode segments ── */
-  let tenure = '1', mode = 'rate';
+  /* ── Segments ── */
+  let addressedTo = 'customer', tenure = '1', outMode = 'onepager';
   function segInit(id, attr, cb){
     const seg = document.getElementById(id);
     seg.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
@@ -199,25 +250,29 @@
     }));
     seg.querySelector('button').click();
   }
-  segInit('tenureSeg','data-t', v => { tenure = v; buildPriceInputs(); });
-  segInit('modeSeg','data-m', v => { mode = v; buildPriceInputs(); });
-
-  const priceInputs = document.getElementById('priceInputs');
-  function buildPriceInputs(){
-    priceInputs.innerHTML = '';
+  /* ── Per-option users + per-user price ── */
+  const optionBoxes = document.getElementById('optionBoxes');
+  let PREFILL_USERS = '';
+  function buildOptionBoxes(){
+    const prevUsers = {}; const prevRate = {};
+    optionBoxes.querySelectorAll('.uIn').forEach(i => prevUsers[i.dataset.t] = i.value);
+    optionBoxes.querySelectorAll('.rIn').forEach(i => prevRate[i.dataset.t] = i.value);
+    optionBoxes.innerHTML = '';
     const opts = (tenure === 'both') ? ['1','3'] : [tenure];
     opts.forEach(t => {
       const d = document.createElement('div');
-      d.className = 'field'; d.style.maxWidth = '300px';
-      d.innerHTML = '<label>' + (mode === 'rate'
-          ? '₹ / user / year — ' + t + '-Year option <span class="req">*</span>'
-          : 'Lump-sum price (ex-GST) — ' + t + '-Year option <span class="req">*</span>') +
-        '</label><input type="number" min="0" class="priceIn" data-t="' + t + '" placeholder="' +
-        (mode === 'rate' ? 'e.g. 1500' : 'e.g. 250000') + '">';
-      priceInputs.appendChild(d);
+      d.className = 'optbox';
+      d.innerHTML =
+        '<h3>' + t + '-Year Option</h3>' +
+        '<div class="row">' +
+        '<div class="field" style="max-width:220px;"><label>Number of Users <span class="req">*</span></label>' +
+        '<input type="number" min="1" class="uIn" data-t="' + t + '" placeholder="e.g. 150" value="' + (prevUsers[t] || PREFILL_USERS || '') + '"></div>' +
+        '<div class="field" style="max-width:280px;"><label>Per-User Price for ' + t + ' Year' + (t>1?'s':'') + ' (₹, ex-GST) <span class="req">*</span></label>' +
+        '<input type="number" min="0" class="rIn" data-t="' + t + '" placeholder="e.g. ' + (t === '1' ? '1500' : '3800') + '" value="' + (prevRate[t] || '') + '"></div>' +
+        '</div><div class="calc" id="calc' + t + '"></div>';
+      optionBoxes.appendChild(d);
     });
-    priceInputs.querySelectorAll('.priceIn').forEach(i => i.addEventListener('input', calc));
-    document.getElementById('users').addEventListener('input', calc);
+    optionBoxes.querySelectorAll('input').forEach(i => i.addEventListener('input', calc));
     calc();
   }
 
@@ -241,50 +296,109 @@
     return out.trim();
   }
 
-  /* ── Live calculation ── */
   function getOptions(){
-    const users = parseInt(document.getElementById('users').value, 10) || 0;
     const list = [];
-    priceInputs.querySelectorAll('.priceIn').forEach(i => {
-      const t = parseInt(i.getAttribute('data-t'), 10);
-      const p = parseFloat(i.value) || 0;
-      let unit, total;
-      if (mode === 'rate') { unit = p; total = p * users * t; }
-      else { unit = null; total = p; }
-      list.push({ years: t, users: users, rate: unit, total: total });
+    optionBoxes.querySelectorAll('.optbox').forEach(box => {
+      const u = parseInt(box.querySelector('.uIn').value, 10) || 0;
+      const r = parseFloat(box.querySelector('.rIn').value) || 0;
+      const t = box.querySelector('.uIn').dataset.t;
+      list.push({ years: parseInt(t,10), users: u, rate: r, total: u * r });
     });
     return list;
   }
   function calc(){
-    const box = document.getElementById('calcBox');
-    const users = parseInt(document.getElementById('users').value, 10) || 0;
-    const opts = getOptions();
-    box.innerHTML = '';
-    opts.forEach(o => {
-      if (!o.total) return;
-      const d = document.createElement('div');
-      d.className = 'calc';
-      d.innerHTML = '<b>' + o.years + '-Year option:</b> ' +
-        (mode === 'rate' ? (fmt(o.rate) + ' / user / year × ' + users + ' users × ' + o.years + ' year' + (o.years>1?'s':'') + ' = ') : '') +
-        '<span class="tot">' + fmt(o.total) + '</span> (excluding GST — GST extra as applicable)' +
-        '<div class="words">Indian Rupees ' + words(o.total) + ' Only, excluding GST.</div>';
-      box.appendChild(d);
+    getOptions().forEach(o => {
+      const el = document.getElementById('calc' + o.years);
+      if (!el) return;
+      el.innerHTML = (o.total > 0)
+        ? o.users + ' users × ' + fmt(o.rate) + ' = <span class="tot">' + fmt(o.total) + '</span> (ex-GST)' +
+          '<div class="words">Indian Rupees ' + words(o.total) + ' Only, excluding GST.</div>'
+        : '';
     });
   }
+
+  /* ── Initialise segments (after all helpers exist) ── */
+  segInit('toSeg','data-v', v => addressedTo = v);
+  segInit('tenureSeg','data-t', v => { tenure = v; buildOptionBoxes(); });
+
+  /* ── Supporting downloads (Dropbox links — dl=1 forces direct download) ── */
+  const DATASHEET_LINK = 'https://www.dropbox.com/scl/fi/3d7gbaak3jul8bb3udaq3/SonicWall-EDR-Overview-July-2026.pdf?rlkey=4nz4huka9fmugpcfa8mayhy6x&st=q1nccx5v&dl=1';
+  const COMPETITION_LINKS = {
+    'Bitdefender': 'https://www.dropbox.com/scl/fi/n0d2hrk6wvmcwt4uriqkw/SonicWall_vs_Bitdefender_GravityZone.pdf?rlkey=t01qo11p3oogb4i9ygj5vbruu&st=r64tpfyc&dl=1',
+    'Kaspersky':   'https://www.dropbox.com/scl/fi/4y5pax9tjv8eajneqx51u/Soniwall-EDR-Kasperky-Battlecard.pdf?rlkey=0f1cf3ro2oumwsxkhponfmvq7&st=fdqjb8lv&dl=1',
+    'SentinelOne': 'https://www.dropbox.com/scl/fi/3iwo0b5uag5ogrikvsu7y/SonicWall_vs_SentinelOne.pdf?rlkey=tpl7qmf8i9to0p9kpao3ob99t&st=7krr13gz&dl=1',
+    'CrowdStrike': 'https://www.dropbox.com/scl/fi/f2937x20ryjxv83gkise0/SonicWall_vs_CrowdStrike.pdf?rlkey=ccubvefbbica9sbriq4ntu1kb&st=1549nv5x&dl=1',
+    'MS Defender': 'https://www.dropbox.com/scl/fi/du7f5l1ku0ygyz0nzbx2n/SonicWall_vs_MS_Defender.pdf?rlkey=4ifmisgumekf0rb2vlzxr11ic&st=gqcittay&dl=1',
+    'Quick Heal':  'https://www.dropbox.com/scl/fi/ktafdllcvzcqs4g9vg411/SonicWall_vs_QuickHeal_Seqrite.pdf?rlkey=4m4sdx9d2t8yfjfrzkxqpyjyg&st=jc7hwdp8&dl=1',
+    'eScan':       'https://www.dropbox.com/scl/fi/yxxq7tfjfls97c6zvjm4y/SonicWall_vs_eScan.pdf?rlkey=ezfuz8ihmu32kc2cpljepblkv&st=nr8abb3e&dl=1',
+    'K7':          'https://www.dropbox.com/scl/fi/6uumwc9fbcw4cjrt6260r/SonicWall_vs_K7.pdf?rlkey=ec1kwtpfr8zmlsmogv0hq9fxp&st=1op7gl3d&dl=1'
+  };
+
+  document.getElementById('dsBtn').addEventListener('click', () => {
+    window.open(DATASHEET_LINK, '_blank');
+  });
+
+  const compSel = document.getElementById('competition');
+  const compBtn = document.getElementById('compBtn');
+  const compNote = document.getElementById('compNote');
+  compSel.addEventListener('change', () => {
+    const link = COMPETITION_LINKS[compSel.value];
+    compBtn.disabled = !link;
+    compNote.textContent = link
+      ? 'SonicWall vs ' + compSel.value + ' comparison ready to download.'
+      : 'Comparison for ' + compSel.value + ' is not available now — it will be added soon.';
+  });
+  compBtn.addEventListener('click', () => {
+    const link = COMPETITION_LINKS[compSel.value];
+    if (link) window.open(link, '_blank');
+  });
+
+  /* ── Partner scheme proposals (Dropbox, direct download) ── */
+  const SCHEME_LINKS = {
+    'EDR Launch Pack':   'https://www.dropbox.com/scl/fi/xya1oz7j7r8x44dvfdx92/EDR_Launch_Pack_Proposal_for_Channel_Partners.pdf?rlkey=sd5geciqxdj78ibmld77rpd1j&st=1hukvcrf&dl=1',
+    'Loyalty Shield':    'https://www.dropbox.com/scl/fi/uhrwbm2f95j8foi3pw81y/Loyalty_Shield_Proposal_for_Channel_Partners.pdf?rlkey=4o88ig3ucz7pujpzjv43mhu6d&st=nx2g8yms&dl=1',
+    'EDR Test Drive':    'https://www.dropbox.com/scl/fi/55bu1w3on7v7i3rrt3264/EDR_Test_Drive_Proposal_for_Channel_Partners.docx?rlkey=rtvzsxvcv7e2uufedj5icm07c&st=gymubi38&dl=1',
+    'Complete the Wall': 'https://www.dropbox.com/scl/fi/y5h089lcof4aefamvufdi/Complete_the_Wall_Proposal_for_Channel_Partners.docx?rlkey=i5c41982ip04m5k1te19vhkmz&st=6wvh4r7h&dl=1'
+  };
+  document.querySelectorAll('.dlbtn.sch').forEach(b =>
+    b.addEventListener('click', () => window.open(SCHEME_LINKS[b.dataset.s], '_blank')));
+
+  /* ── Prefill from CRM ── */
+  (function prefillFromCRM(){
+    const q = new URLSearchParams(location.search);
+    if (q.get('exec') && EXEC_PIN[q.get('exec')]) execName.value = q.get('exec');
+    if (q.get('cust'))    document.getElementById('custName').value = q.get('cust');
+    if (q.get('partner')) document.getElementById('partnerName').value = q.get('partner');
+    if (q.get('users')) {
+      PREFILL_USERS = q.get('users');
+      setTimeout(() => {
+        optionBoxes.querySelectorAll('.uIn').forEach(i => { if (!i.value) i.value = PREFILL_USERS; });
+        calc();
+      }, 50);
+    }
+    if (q.get('exec')) execPin.focus();
+  })();
 
   /* ── PDF generation ── */
   document.getElementById('genBtn').addEventListener('click', () => {
     const msg = document.getElementById('msg');
     msg.className = 'msg';
-    const cust = document.getElementById('custName').value.trim();
-    const addr = document.getElementById('custAddr').value.trim();
-    const users = parseInt(document.getElementById('users').value, 10) || 0;
-    const opts = getOptions().filter(o => o.total > 0);
-    if (!cust || !addr || !users || !opts.length) {
-      msg.textContent = '✖ Fill customer name, address, users and price before generating.';
-      msg.className = 'msg err';
-      return;
+    const cust    = document.getElementById('custName').value.trim();
+    const partner = document.getElementById('partnerName').value.trim();
+    const opts = getOptions().filter(o => o.users > 0 && o.rate > 0);
+    const toName = (addressedTo === 'partner') ? partner : cust;
+    if (!toName) {
+      msg.textContent = '✖ ' + (addressedTo === 'partner' ? 'Partner name' : 'Customer name') + ' is required for the To block.';
+      msg.className = 'msg err'; return;
     }
+    if (!opts.length) {
+      msg.textContent = '✖ Enter users and per-user price for at least one option.';
+      msg.className = 'msg err'; return;
+    }
+
+    const cName = document.getElementById('contactName').value.trim();
+    const cMob  = document.getElementById('contactMobile').value.trim();
+    const cMail = document.getElementById('contactEmail').value.trim();
     const now = new Date();
     const dd = String(now.getDate()).padStart(2,'0');
     const mons = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -297,25 +411,38 @@
     opts.forEach((o, i) => {
       const optTitle = (opts.length > 1) ? ('Option ' + String.fromCharCode(65+i) + ' — ' + o.years + '-Year Subscription') : (o.years + '-Year Subscription');
       tables +=
-        '<h3 style="font-size:13px;color:#e55f06;margin:18px 0 6px;">' + optTitle + '</h3>' +
+        '<h3 style="font-size:13px;color:#e55f06;margin:16px 0 6px;">' + optTitle + '</h3>' +
         '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
         '<tr style="background:#0e1b33;color:#fff;">' +
           '<th style="padding:7px 9px;border:1px solid #0e1b33;text-align:left;">S.No.</th>' +
           '<th style="padding:7px 9px;border:1px solid #0e1b33;text-align:left;">Product Description</th>' +
-          '<th style="padding:7px 9px;border:1px solid #0e1b33;">Quantity</th>' +
-          (o.rate !== null ? '<th style="padding:7px 9px;border:1px solid #0e1b33;">Unit Price<br>(₹/user/year)</th>' : '') +
+          '<th style="padding:7px 9px;border:1px solid #0e1b33;">No. of Users</th>' +
+          '<th style="padding:7px 9px;border:1px solid #0e1b33;">Per-User Price (₹)</th>' +
           '<th style="padding:7px 9px;border:1px solid #0e1b33;">Total (₹)</th></tr>' +
         '<tr>' +
           '<td style="padding:7px 9px;border:1px solid #d9dfea;">1</td>' +
           '<td style="padding:7px 9px;border:1px solid #d9dfea;">' + PRODUCT + ' — ' + PRODUCT_DESC +
             '<br>Subscription tenure: ' + o.years + ' Year' + (o.years>1?'s':'') + '</td>' +
-          '<td style="padding:7px 9px;border:1px solid #d9dfea;text-align:center;">' + o.users + ' users</td>' +
-          (o.rate !== null ? '<td style="padding:7px 9px;border:1px solid #d9dfea;text-align:right;">' + fmt(o.rate) + '</td>' : '') +
+          '<td style="padding:7px 9px;border:1px solid #d9dfea;text-align:center;">' + o.users + '</td>' +
+          '<td style="padding:7px 9px;border:1px solid #d9dfea;text-align:right;">' + fmt(o.rate) + '</td>' +
           '<td style="padding:7px 9px;border:1px solid #d9dfea;text-align:right;">' + fmt(o.total) + '</td></tr>' +
         '</table>' +
         '<p style="font-size:12.5px;margin:8px 0 2px;"><b>Grand Total — Excluding GST: ' + fmt(o.total) + '</b></p>' +
         '<p style="font-size:11.5px;color:#5c6a85;margin-bottom:4px;">Amount in Words: Indian Rupees ' + words(o.total) + ' Only, excluding GST.</p>';
     });
+
+    // To / From blocks depend on who the proposal is addressed to
+    let toBlock = '<b style="color:#e55f06;">To</b><br><b>' + toName + '</b>';
+    if (cName) toBlock += '<br>Kind Attn: ' + cName;
+    if (cMob)  toBlock += '<br>Mobile: ' + cMob;
+    if (cMail) toBlock += '<br>Email: ' + cMail;
+    if (addressedTo === 'partner' && cust) toBlock += '<br><span style="color:#5c6a85;">End Customer: <b style="color:#1c2436;">' + cust + '</b></span>';
+
+    let fromBlock = '<b style="color:#e55f06;">From</b><br><b>eCAPS Computers India Private Limited</b>';
+    if (addressedTo === 'customer' && partner) {
+      fromBlock += '<br><span style="color:#5c6a85;">Through Channel Partner: <b style="color:#1c2436;">' + partner + '</b></span>';
+    }
+
 
     document.getElementById('pdfArea').innerHTML =
       '<div style="padding:34px 38px;font-family:Segoe UI,Arial,sans-serif;">' +
@@ -330,18 +457,9 @@
         '<td style="text-align:right;"><b>Prepared by:</b> ' + execName.value + '<br>' + DESIGNATION + ', eCAPS Computers India Pvt Ltd</td>' +
       '</tr></table>' +
       '<table style="width:100%;font-size:11.5px;margin-bottom:6px;"><tr>' +
-        '<td style="width:50%;vertical-align:top;background:#f4f6fa;border-radius:6px;padding:9px 11px;">' +
-          '<b style="color:#e55f06;">To</b><br><b>' + cust + '</b>' +
-          (document.getElementById('custContact').value ? '<br>Kind Attn: ' + document.getElementById('custContact').value : '') +
-          '<br>' + addr.replace(/\n/g,'<br>') + '</td>' +
+        '<td style="width:50%;vertical-align:top;background:#f4f6fa;border-radius:6px;padding:9px 11px;">' + toBlock + '</td>' +
         '<td style="width:4%;"></td>' +
-        '<td style="width:46%;vertical-align:top;background:#f4f6fa;border-radius:6px;padding:9px 11px;">' +
-          '<b style="color:#e55f06;">From</b><br><b>eCAPS Computers India Private Limited</b>' +
-          (document.getElementById('partnerName').value.trim()
-            ? '<br><span style="color:#5c6a85;">Through Channel Partner: <b style="color:#1c2436;">' +
-              document.getElementById('partnerName').value.trim() + '</b></span>'
-            : '') +
-        '</td>' +
+        '<td style="width:46%;vertical-align:top;background:#f4f6fa;border-radius:6px;padding:9px 11px;">' + fromBlock + '</td>' +
       '</tr></table>' +
       tables +
       '<h3 style="font-size:12.5px;color:#0e1b33;margin:16px 0 6px;">Terms &amp; Conditions</h3>' +
@@ -354,34 +472,34 @@
         '<li>Support and updates as per the OEM subscription terms applicable to the quoted product.</li>' +
         '<li>This proposal is subject to final confirmation by eCAPS Computers India Private Limited.</li>' +
       '</ol>' +
-      '<table style="width:100%;font-size:11.5px;margin-top:26px;"><tr>' +
-        '<td><b>For eCAPS Computers India Private Limited</b><br><br><br>Authorised Signatory<br>' +
-        'Name: __________________________<br>Designation: ____________________</td>' +
+      '<table style="width:100%;font-size:11.5px;margin-top:24px;"><tr>' +
+        '<td><b>For eCAPS Computers India Private Limited</b><br><br>' +
+        '<b style="font-size:12.5px;">' + execName.value + '</b><br>' +
+        DESIGNATION +
+        ((EXEC_CONTACT[execName.value] || {}).email  ? '<br>Email: '  + EXEC_CONTACT[execName.value].email  : '') +
+        ((EXEC_CONTACT[execName.value] || {}).mobile ? '<br>Mobile: ' + EXEC_CONTACT[execName.value].mobile : '') +
+        '</td>' +
       '</tr></table>' +
       '</div>';
 
-    const fname = 'eCAPS-Proposal-' + cust.replace(/[^A-Za-z0-9]+/g,'-').substring(0,30) + '.pdf';
+    const fname = 'eCAPS-Proposal-' + toName.replace(/[^A-Za-z0-9]+/g,'-').substring(0,30) + '.pdf';
     const area = document.getElementById('pdfArea');
     const overlay = document.getElementById('genOverlay');
     overlay.style.display = 'flex';
     area.style.display = 'block';
+    window.scrollTo(0, 0);   // capture must start from the top — prevents blank offset & truncation
+    function cleanup(){ area.style.display = 'none'; overlay.style.display = 'none'; }
+    function fail(){ cleanup(); msg.textContent = '✖ PDF generation failed — try once more.'; msg.className = 'msg err'; }
+
     setTimeout(() => {
       html2pdf().set({
         margin: 0,
         filename: fname,
         image: { type: 'jpeg', quality: 0.95 },
-        html2canvas: { scale: 2, useCORS: true },
+        html2canvas: { scale: 2, useCORS: true, scrollY: 0, scrollX: 0 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      }).from(area).save().then(() => {
-        area.style.display = 'none';
-        overlay.style.display = 'none';
-      }).catch(() => {
-        area.style.display = 'none';
-        overlay.style.display = 'none';
-        msg.textContent = '✖ PDF generation failed — try once more.';
-        msg.className = 'msg err';
-      });
-    }, 400);   // give the logos a moment to render
+      }).from(area).save().then(cleanup).catch(fail);
+    }, 400);
   });
 </script>
 </body>
