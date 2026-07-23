@@ -119,6 +119,19 @@
     cursor:pointer;
   }
   .remove-btn:hover{background:#fdecec;border-color:#f2c4c4;}
+  .head-btns{display:flex;gap:8px;align-items:center;}
+  .prop-btn{
+    background:var(--orange);
+    color:#fff;
+    border:none;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.3px;
+    border-radius:6px;
+    padding:6px 16px;
+    cursor:pointer;
+  }
+  .prop-btn:hover{background:var(--orange-dark);}
 
   .egrid{
     display:grid;
@@ -309,7 +322,10 @@
   <div class="entry">
     <div class="entry-head">
       <h2>Prospect <span class="eno">1</span></h2>
-      <button type="button" class="remove-btn">✕ Remove</button>
+      <div class="head-btns">
+        <button type="button" class="prop-btn">📄 Create Proposal</button>
+        <button type="button" class="remove-btn">✕ Remove</button>
+      </div>
     </div>
     <div class="egrid">
       <div class="field span2">
@@ -603,6 +619,20 @@
     entry.querySelector('.remove-btn').addEventListener('click', () => {
       entry.remove();
       renumber();
+    });
+
+    // Create Proposal button → proposal page with case details carried over
+    entry.querySelector('.prop-btn').addEventListener('click', () => {
+      const cust    = entry.querySelector('[data-f="Prospect Name"]').value.trim();
+      const partner = entry.querySelector('[data-f="Partner Name"]').value.trim();
+      const users   = entry.querySelector('[data-f="Number of EDR Users"]').value.trim();
+      if (!execName.value) { alert('Select your name first.'); return; }
+      if (!cust) { alert('Enter the prospect / customer name first.'); return; }
+      const url = 'proposal.html?exec=' + encodeURIComponent(execName.value) +
+                  '&cust=' + encodeURIComponent(cust) +
+                  (partner ? '&partner=' + encodeURIComponent(partner) : '') +
+                  (users ? '&users=' + encodeURIComponent(users) : '');
+      window.open(url, '_blank');
     });
 
     entriesBox.appendChild(entry);
